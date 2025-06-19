@@ -1,4 +1,4 @@
-﻿using System.Numerics;
+﻿using System;
 
 namespace BasicStatsCommandLineApp
 {
@@ -6,25 +6,34 @@ namespace BasicStatsCommandLineApp
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("How many numbers are you entering?");
-            int len = Convert.ToInt32(Console.ReadLine());
-
-            int count = len, sum=0, max=int.MinValue, min=int.MaxValue;
-            float avg;
-            int[] nums = new int[len];
-
-            Console.WriteLine("Enter numbers: ");
-            for (int i = 0; i < len; i++)
+            if (args.Length == 0)
             {
-                nums[i] = Convert.ToInt32(Console.ReadLine());
+                Console.WriteLine("Please provide numbers as command-line arguments. Example: dotnet run -- 10 20 30");
+                return;
             }
 
-            for (int i = 0; i < len; i++) { 
-                sum += nums[i];
-                if (nums[i] > max) max = nums[i];
-                if (nums[i] < min) min = nums[i];
+            int count = args.Length;
+            int[] nums = new int[count];
+            int sum = 0, max = int.MinValue, min = int.MaxValue;
+
+            // Convert args to integers
+            for (int i = 0; i < count; i++)
+            {
+                if (int.TryParse(args[i], out int num))
+                {
+                    nums[i] = num;
+                    sum += num;
+                    if (num > max) max = num;
+                    if (num < min) min = num;
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid number '{args[i]}'. Please enter only integers.");
+                    return;
+                }
             }
-            avg = (float)sum / len;
+
+            float avg = (float)sum / count;
 
             Console.WriteLine("------------Basic Stats of Your Numbers----------------");
             Console.WriteLine($" Count: {count}\n Sum: {sum}\n Max: {max}\n Min: {min}\n Avg: {avg}");
